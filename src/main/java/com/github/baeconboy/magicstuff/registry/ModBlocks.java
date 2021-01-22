@@ -1,8 +1,8 @@
-package com.baecon.magicstuff.registry;
+package com.github.baeconboy.magicstuff.registry;
 
-import com.baecon.magicstuff.MagicStuff;
-import com.baecon.magicstuff.base.BlockBase;
-import com.baecon.magicstuff.block.BlockTest;
+import com.github.baeconboy.magicstuff.MagicStuff;
+import com.github.baeconboy.magicstuff.base.BlockBase;
+import com.github.baeconboy.magicstuff.block.BlockTest;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.Registry;
 

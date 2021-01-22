@@ -1,8 +1,7 @@
-package com.baecon.magicstuff.item;
+package com.github.baeconboy.magicstuff.item;
 
-import com.baecon.magicstuff.MagicStuff;
-import com.baecon.magicstuff.base.BlockItemBase;
-import com.baecon.magicstuff.registry.ModBlocks;
+import com.github.baeconboy.magicstuff.base.BlockItemBase;
+import com.github.baeconboy.magicstuff.registry.ModBlocks;
 import net.minecraft.item.ItemGroup;
 
 public class ItemBlockTest extends BlockItemBase {

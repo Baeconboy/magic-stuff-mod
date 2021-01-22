@@ -1,10 +1,10 @@
-package com.baecon.magicstuff.registry;
+package com.github.baeconboy.magicstuff.registry;
 
-import com.baecon.magicstuff.MagicStuff;
-import com.baecon.magicstuff.base.BlockItemBase;
-import com.baecon.magicstuff.base.ItemBase;
-import com.baecon.magicstuff.item.ItemBlockTest;
-import com.baecon.magicstuff.item.ItemRuby;
+import com.github.baeconboy.magicstuff.MagicStuff;
+import com.github.baeconboy.magicstuff.base.BlockItemBase;
+import com.github.baeconboy.magicstuff.base.ItemBase;
+import com.github.baeconboy.magicstuff.item.ItemBlockTest;
+import com.github.baeconboy.magicstuff.item.ItemWandBasic;
 import net.minecraft.item.Item;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.Registry;
@@ -13,14 +13,14 @@ import java.util.ArrayList;
 
 public class ModItems {
 
-    public static final ItemRuby itemRuby = new ItemRuby();
+    public static final ItemWandBasic itemWandBasic = new ItemWandBasic();
     public static final ItemBlockTest itemBlockTest = new ItemBlockTest();
 
 
     private static final ArrayList<Item> items = new ArrayList<>();
 
     public static void init() {
-        ModItems.add(itemRuby);
+        ModItems.add(itemWandBasic);
         ModItems.add(itemBlockTest);
 
         ModItems.register();

@@ -1,4 +1,6 @@
 {
   "item.magic_stuff.ruby": "Ruby",
-  "block.magic_stuff.test": "Test Block"
+  "block.magic_stuff.test": "Test Block",
+
+  "player.shitmate.cancer": "§6Max Mana: %s\n§6Mana: %s"
 }

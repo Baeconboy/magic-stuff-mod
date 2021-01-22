@@ -1,4 +1,4 @@
-package com.baecon.magicstuff.base;
+package com.github.baeconboy.magicstuff.base;
 
 import net.minecraft.block.Block;
 import net.minecraft.item.BlockItem;

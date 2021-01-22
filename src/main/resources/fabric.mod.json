@@ -19,12 +19,20 @@
   "environment": "*",
   "entrypoints": {
     "main": [
-      "com.baecon.magicstuff.MagicStuff"
+      "com.github.baeconboy.magicstuff.MagicStuff"
+    ],
+    "cardinal-components": [
+      "com.github.baeconboy.magicstuff.Component"
     ]
   },
   "mixins": [
+  "magic_stuff.mixins.json"
   ],
-
+  "custom": {
+    "cardinal-components": [
+      "magic_stuff:mana"
+    ]
+  },
   "depends": {
     "fabricloader": ">=0.7.4",
     "fabric": "*",

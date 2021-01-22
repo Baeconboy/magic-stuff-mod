@@ -1,6 +1,6 @@
-package com.baecon.magicstuff.block;
+package com.github.baeconboy.magicstuff.block;
 
-import com.baecon.magicstuff.base.BlockBase;
+import com.github.baeconboy.magicstuff.base.BlockBase;
 import net.fabricmc.fabric.api.object.builder.v1.block.FabricBlockSettings;
 import net.fabricmc.fabric.api.tool.attribute.v1.FabricToolTags;
 import net.minecraft.block.Material;
