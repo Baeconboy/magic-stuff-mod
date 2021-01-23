@@ -16,6 +16,6 @@ public class Component implements EntityComponentInitializer {
 
     @Override
     public void registerEntityComponentFactories(EntityComponentFactoryRegistry registry) {
-        registry.registerForPlayers(MANA, player -> new PlayerManaComponent(), RespawnCopyStrategy.ALWAYS_COPY);
+        registry.registerForPlayers(MANA, PlayerManaComponent::new, RespawnCopyStrategy.ALWAYS_COPY);
     }
 }

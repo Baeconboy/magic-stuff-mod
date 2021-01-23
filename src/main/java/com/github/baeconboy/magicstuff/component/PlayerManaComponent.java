@@ -1,53 +1,89 @@
 package com.github.baeconboy.magicstuff.component;
 
+import dev.onyxstudios.cca.api.v3.component.sync.AutoSyncedComponent;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.PacketByteBuf;
+import net.minecraft.server.network.ServerPlayerEntity;
 
-public class PlayerManaComponent implements ManaComponent {
+public class PlayerManaComponent implements ManaComponent, AutoSyncedComponent {
 
-    public static int defaultMaxMana = 500;
-    public static int defaultRegCoolDown = 20;
+    public static final int defaultMaxMana = 100;
+    public static final int defaultRegCoolDown = 20;
+    private static final float regMultiplier = 0.5F;
 
-    private int regStreak;
+    private enum updateEnum {
+        NONE,
+        MANA,
+        MAX_MANA,
+        REGCOOLDOWN
+    }
+
+    private final Object provider;
+
     private int regCoolDown;
     private int mana;
     private int maxMana;
-    private int manaPercentage;
+    private int regBonus;
+
+    private boolean infiniteMana = false;
+    private boolean manaDirty = true;
+    private boolean maxManaDirty = true;
+    private boolean regCoolDownDirty = true;
+
+    public PlayerManaComponent(Object provider) {
+        this.provider = provider;
+    }
 
     @Override
     public void tick() {
-        //manaPercentage = (mana * 100) / maxMana;
         regenerate();
+
+
     }
 
     @Override
-    public int getMana() {
-        return this.mana;
+    public void init(PlayerEntity player) {
+
     }
 
-    public void setMana(int value) {
-        mana = value;
+
+    @Override
+    public void writeSyncPacket(PacketByteBuf buf, ServerPlayerEntity recipient) {
+        this.writeSyncPacket(buf, recipient, updateEnum.NONE);
+    }
+
+    public void writeSyncPacket(PacketByteBuf buf, ServerPlayerEntity recipient, updateEnum update) {
+        if (update == updateEnum.MANA)
+            buf.writeVarInt(this.mana);
+        if (update == updateEnum.MAX_MANA)
+            buf.writeVarInt(this.maxMana);
+        if (update == updateEnum.REGCOOLDOWN)
+            buf.writeVarInt(this.regCoolDown);
+        buf.writeEnumConstant(update);
+    }
+
+
+    @Override
+    public void applySyncPacket(PacketByteBuf buf) {
+        updateEnum update = buf.readEnumConstant(updateEnum.MANA.getDeclaringClass());
     }
 
     @Override
-    public int getMaxMana() {
-        return this.maxMana;
-    }
-
-    public void setMaxMana(int value) {
-        maxMana = value;
+    public boolean shouldSyncWith(ServerPlayerEntity player) {
+        return player == this.provider;
     }
 
     @Override
     public boolean useMana(int value) {
-        if (value <= mana) {
-            mana -= value;
-            regCoolDown = defaultRegCoolDown;
-            regStreak = 0;
-            return true;
-        } else
-            return false;
-
-
+        if (!infiniteMana) {
+            if (value <= mana) {
+                mana -= value;
+                regCoolDown = defaultRegCoolDown;
+                return true;
+            } else
+                return false;
+        } else return true;
     }
 
     @Override
@@ -56,20 +92,22 @@ public class PlayerManaComponent implements ManaComponent {
             if (regCoolDown > 0) {
                 regCoolDown--;
             } else {
-                mana++;
-                regStreak++;
-                regCoolDown = defaultRegCoolDown - Math.min(defaultRegCoolDown, regStreak);
-                System.out.println(mana);
+                //courtesy of Terraria mana regeneration
+                mana += Math.min(((int) ((maxMana / 7 + 1 + regBonus) * (mana / maxMana * 0.8 + 0.2) * regMultiplier)), maxMana);
             }
         }
+    }
+
+    public void regenerate(Float value) {
+
     }
 
     @Override
     public void readFromNbt(CompoundTag tag) {
         this.mana = tag.getInt("Mana");
         this.maxMana = tag.getInt("MaxMana");
-
         this.regCoolDown = tag.getInt("RegCoolDown");
+        this.infiniteMana = tag.getBoolean("Infinite");
     }
 
     @Override
@@ -78,11 +116,45 @@ public class PlayerManaComponent implements ManaComponent {
             tag.putInt("Mana", mana);
             tag.putInt("MaxMana", maxMana);
         } else {
-            tag.putInt("Mana", defaultMaxMana);
             tag.putInt("MaxMana", defaultMaxMana);
+            tag.putInt("Mana", 0);
         }
         tag.putInt("RegCoolDown", regCoolDown);
+        tag.putBoolean("Infinite", infiniteMana);
 
     }
+
+    //Getters
+    @Override
+    public int getMana() {
+        return this.mana;
+    }
+
+    @Override
+    public int getMaxMana() {
+        return this.maxMana;
+    }
+
+    @Override
+    public int getRegBonus() {
+        return this.regBonus;
+    }
+
+    //SETTERS
+    @Override
+    public void setMana(int value) {
+        mana = value;
+    }
+
+    @Override
+    public void setMaxMana(int value) {
+        maxMana = value;
+    }
+
+    @Override
+    public void setRegBonus(int value) {
+        regBonus = value;
+    }
+
 
 }
