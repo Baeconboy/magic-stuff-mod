@@ -1,8 +1,7 @@
 package com.github.baeconboy.magicstuff.mixin;
 
-import com.github.baeconboy.magicstuff.Component;
+import com.github.baeconboy.magicstuff.Components;
 import com.github.baeconboy.magicstuff.component.ManaComponent;
-import com.github.baeconboy.magicstuff.component.PlayerManaComponent;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.entity.Entity;
@@ -27,13 +26,13 @@ public abstract class PlayerEntityMixin extends Entity {
 
     @Shadow public abstract String getEntityName();
 
-    private ManaComponent comp = Component.MANA.get(this);
+    private ManaComponent comp = Components.MANA.get(this);
 
 
     @Inject(at = @At("HEAD"), method = "tick")
     private void tick(CallbackInfo ci) {
         if(this.getEntityWorld().isClient())
-        this.sendMessage(new TranslatableText("player.shitmate.cancer", comp.getMaxMana(), comp.getMana()), true);;
+        this.sendMessage(new TranslatableText("player.shitmate.cancer", comp.getMana(), comp.getMaxMana()), true);
         comp.tick();
     }
 

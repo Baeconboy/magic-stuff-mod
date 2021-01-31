@@ -4,6 +4,7 @@ import com.github.baeconboy.magicstuff.MagicStuff;
 import com.github.baeconboy.magicstuff.base.BlockItemBase;
 import com.github.baeconboy.magicstuff.base.ItemBase;
 import com.github.baeconboy.magicstuff.item.ItemBlockTest;
+import com.github.baeconboy.magicstuff.item.ItemManaApple;
 import com.github.baeconboy.magicstuff.item.ItemWandBasic;
 import net.minecraft.item.Item;
 import net.minecraft.util.Identifier;
@@ -11,26 +12,29 @@ import net.minecraft.util.registry.Registry;
 
 import java.util.ArrayList;
 
-public class ModItems {
+public class ModItems implements modRegistry{
 
     public static final ItemWandBasic itemWandBasic = new ItemWandBasic();
-    public static final ItemBlockTest itemBlockTest = new ItemBlockTest();
+    public static final ItemManaApple itemManaApple = new ItemManaApple();
 
+    public static final ItemBlockTest itemBlockTest = new ItemBlockTest();
 
     private static final ArrayList<Item> items = new ArrayList<>();
 
-    public static void init() {
-        ModItems.add(itemWandBasic);
-        ModItems.add(itemBlockTest);
+    public ModItems(){}
+    public void init() {
+        this.add(itemWandBasic);
+        this.add(itemManaApple);
+        this.add(itemBlockTest);
 
-        ModItems.register();
+        this.register();
     }
 
-    public static void add(Item item) {
-        items.add(item);
+    public void add(Object item) {
+        items.add((Item) item);
     }
 
-    public static void register() {
+    public void register() {
         for (Item item : items) {
             if (item instanceof ItemBase)
                 Registry.register(Registry.ITEM, new Identifier(MagicStuff.MOD_ID, ((ItemBase) item).getItemName()), item);

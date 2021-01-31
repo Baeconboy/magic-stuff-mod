@@ -8,23 +8,28 @@ import net.minecraft.util.registry.Registry;
 
 import java.util.ArrayList;
 
-public class ModBlocks {
+public class ModBlocks implements modRegistry {
 
     public static final BlockTest blockTest = new BlockTest();
 
     private static final ArrayList<BlockBase> blocks = new ArrayList<>();
 
-    public static void init() {
-        ModBlocks.add(blockTest);
-
-        ModBlocks.register();
+    public ModBlocks() {
     }
 
-    public static void add(BlockBase block) {
-        blocks.add(block);
+    @Override
+    public void init() {
+        this.add(blockTest);
+
+        this.register();
+
     }
 
-    public static void register() {
+    public void add(Object block) {
+        blocks.add((BlockBase) block);
+    }
+
+    public void register() {
         for (BlockBase block : blocks) {
             Registry.register(Registry.BLOCK, new Identifier(MagicStuff.MOD_ID, block.getBlockName()), block);
         }

@@ -1,6 +1,6 @@
 {
   "parent": "item/generated",
   "textures": {
-    "layer0": "magic_stuff:item/ruby"
+    "layer0": "magic_stuff:item/mana_apple"
   }
 }

@@ -1,0 +1,7 @@
+{
+  "parent": "magic_stuff:item/wand",
+  "textures": {
+    "handle": "block/stripped_oak_log",
+    "cap": "block/lapis_block"
+  }
+}

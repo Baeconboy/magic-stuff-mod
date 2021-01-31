@@ -1,6 +1,16 @@
 {
-  "item.magic_stuff.ruby": "Ruby",
+  "item.magic_stuff.mana_apple": "Mana Apple",
+  "item.magic_stuff.basic_wand": "Basic Wand",
   "block.magic_stuff.test": "Test Block",
 
-  "player.shitmate.cancer": "§6Max Mana: %s\n§6Mana: %s"
+  "player.shitmate.cancer": "§6%s / %s",
+  "fuck.me" :  "Shawn i will murder your entire family and you wont even notice",
+
+  "commands.magic_stuff.mana.getmana": "%s has %s Mana.",
+  "commands.magic_stuff.mana.getmaxmana": "%s has %s Max Mana.",
+
+  "commands.magic_stuff.mana.setmana.single": "Set %s's Mana to %s.",
+  "commands.magic_stuff.mana.setmana.multiple": "Set selected players Mana to %s.",
+  "commands.magic_stuff.mana.setmaxmana.single": "Set %s's Max Mana to %s.",
+  "commands.magic_stuff.mana.setmaxmana.multiple": "Set selected players Max Mana to %s."
 }

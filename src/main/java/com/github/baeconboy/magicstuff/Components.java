@@ -9,7 +9,7 @@ import dev.onyxstudios.cca.api.v3.entity.EntityComponentInitializer;
 import nerdhub.cardinal.components.api.util.RespawnCopyStrategy;
 import net.minecraft.util.Identifier;
 
-public class Component implements EntityComponentInitializer {
+public class Components implements EntityComponentInitializer {
     public static final ComponentKey<ManaComponent> MANA =
             ComponentRegistry.getOrCreate(new Identifier(MagicStuff.MOD_ID, "mana"), ManaComponent.class);
 

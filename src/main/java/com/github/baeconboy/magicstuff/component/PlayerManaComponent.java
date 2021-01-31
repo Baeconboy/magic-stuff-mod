@@ -1,16 +1,22 @@
 package com.github.baeconboy.magicstuff.component;
 
+import com.github.baeconboy.magicstuff.Components;
 import dev.onyxstudios.cca.api.v3.component.sync.AutoSyncedComponent;
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.network.PacketByteBuf;
 import net.minecraft.server.network.ServerPlayerEntity;
 
 public class PlayerManaComponent implements ManaComponent, AutoSyncedComponent {
 
     public static final int defaultMaxMana = 100;
     public static final int defaultRegCoolDown = 20;
+    private static final int appleIncrease = 5;
+
+
     private static final float regMultiplier = 0.5F;
+
 
     private enum updateEnum {
         NONE,
@@ -22,14 +28,14 @@ public class PlayerManaComponent implements ManaComponent, AutoSyncedComponent {
     private final Object provider;
 
     private int regCoolDown;
+    private int appleAmount;
+    private int tempMana = defaultMaxMana;
     private int mana;
     private int maxMana;
     private int regBonus;
 
+
     private boolean infiniteMana = false;
-    private boolean manaDirty = true;
-    private boolean maxManaDirty = true;
-    private boolean regCoolDownDirty = true;
 
     public PlayerManaComponent(Object provider) {
         this.provider = provider;
@@ -37,8 +43,9 @@ public class PlayerManaComponent implements ManaComponent, AutoSyncedComponent {
 
     @Override
     public void tick() {
-        regenerate();
+        maxMana = tempMana + (appleAmount * appleIncrease);
 
+        regenerate();
 
     }
 
@@ -47,28 +54,7 @@ public class PlayerManaComponent implements ManaComponent, AutoSyncedComponent {
 
     }
 
-
-    @Override
-    public void writeSyncPacket(PacketByteBuf buf, ServerPlayerEntity recipient) {
-        this.writeSyncPacket(buf, recipient, updateEnum.NONE);
-    }
-
-    public void writeSyncPacket(PacketByteBuf buf, ServerPlayerEntity recipient, updateEnum update) {
-        if (update == updateEnum.MANA)
-            buf.writeVarInt(this.mana);
-        if (update == updateEnum.MAX_MANA)
-            buf.writeVarInt(this.maxMana);
-        if (update == updateEnum.REGCOOLDOWN)
-            buf.writeVarInt(this.regCoolDown);
-        buf.writeEnumConstant(update);
-    }
-
-
-    @Override
-    public void applySyncPacket(PacketByteBuf buf) {
-        updateEnum update = buf.readEnumConstant(updateEnum.MANA.getDeclaringClass());
-    }
-
+    @Environment(EnvType.SERVER)
     @Override
     public boolean shouldSyncWith(ServerPlayerEntity player) {
         return player == this.provider;
@@ -80,10 +66,18 @@ public class PlayerManaComponent implements ManaComponent, AutoSyncedComponent {
             if (value <= mana) {
                 mana -= value;
                 regCoolDown = defaultRegCoolDown;
+                Components.MANA.sync(this.provider);
+
                 return true;
             } else
                 return false;
         } else return true;
+    }
+
+    public void usedManaApple() {
+        this.appleAmount++;
+        this.regCoolDown = defaultRegCoolDown;
+        Components.MANA.sync(this.provider);
     }
 
     @Override
@@ -93,34 +87,33 @@ public class PlayerManaComponent implements ManaComponent, AutoSyncedComponent {
                 regCoolDown--;
             } else {
                 //courtesy of Terraria mana regeneration
-                mana += Math.min(((int) ((maxMana / 7 + 1 + regBonus) * (mana / maxMana * 0.8 + 0.2) * regMultiplier)), maxMana);
+                int value = (int) ((maxMana / 7 + 1 + regBonus) * (mana / maxMana * 0.8 + 0.2) * regMultiplier);
+                value = Math.max(1, value);
+                mana += value;
+                mana = Math.min(mana, maxMana);
+                Components.MANA.sync(this.provider);
+
             }
         }
     }
 
-    public void regenerate(Float value) {
-
-    }
-
     @Override
     public void readFromNbt(CompoundTag tag) {
-        this.mana = tag.getInt("Mana");
-        this.maxMana = tag.getInt("MaxMana");
-        this.regCoolDown = tag.getInt("RegCoolDown");
         this.infiniteMana = tag.getBoolean("Infinite");
+        this.regCoolDown = tag.getInt("CoolDown");
+        this.appleAmount = tag.getInt("Apples");
+        this.mana = tag.getInt("Mana");
+        this.tempMana = tag.getInt("MaxMana");
     }
 
     @Override
     public void writeToNbt(CompoundTag tag) {
-        if (maxMana > 0) {
-            tag.putInt("Mana", mana);
-            tag.putInt("MaxMana", maxMana);
-        } else {
-            tag.putInt("MaxMana", defaultMaxMana);
-            tag.putInt("Mana", 0);
-        }
-        tag.putInt("RegCoolDown", regCoolDown);
         tag.putBoolean("Infinite", infiniteMana);
+        tag.putInt("CoolDown", regCoolDown);
+        tag.putInt("Apples", appleAmount);
+        tag.putInt("Mana", mana);
+        tag.putInt("MaxMana", tempMana);
+
 
     }
 
@@ -129,6 +122,11 @@ public class PlayerManaComponent implements ManaComponent, AutoSyncedComponent {
     public int getMana() {
         return this.mana;
     }
+
+    public boolean getInfinite() {
+        return infiniteMana;
+    }
+
 
     @Override
     public int getMaxMana() {
@@ -144,11 +142,19 @@ public class PlayerManaComponent implements ManaComponent, AutoSyncedComponent {
     @Override
     public void setMana(int value) {
         mana = value;
+        Components.MANA.sync(this.provider);
+    }
+
+    public void setInfinite(boolean value) {
+        this.infiniteMana = value;
+        Components.MANA.sync(this.provider);
     }
 
     @Override
     public void setMaxMana(int value) {
-        maxMana = value;
+        tempMana = value;
+        Components.MANA.sync(this.provider);
+
     }
 
     @Override

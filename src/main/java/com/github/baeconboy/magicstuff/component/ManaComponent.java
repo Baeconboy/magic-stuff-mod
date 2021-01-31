@@ -20,13 +20,18 @@ public interface ManaComponent extends Component {
 
     void regenerate();
 
+    int getMana();
+
+    boolean getInfinite();
+
     int getMaxMana();
 
-    int getMana();
 
     int getRegBonus();
 
     void setMana(int value);
+
+    void setInfinite(boolean value);
 
     void setMaxMana(int value);
 

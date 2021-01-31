@@ -9,8 +9,8 @@
     "Baecon"
   ],
   "contact": {
-    "homepage": "",
-    "sources": ""
+    "issues": "https://github.com/Baeconboy/magic-stuff-mod/issues",
+    "sources": "https://github.com/Baeconboy/magic-stuff-mod"
   },
 
   "license": "CC0-1.0",
@@ -22,7 +22,7 @@
       "com.github.baeconboy.magicstuff.MagicStuff"
     ],
     "cardinal-components": [
-      "com.github.baeconboy.magicstuff.Component"
+      "com.github.baeconboy.magicstuff.Components"
     ]
   },
   "mixins": [
